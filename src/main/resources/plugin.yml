@@ -1,0 +1,8 @@
+main: me.leogianfagna.customitemsave.Main
+name: CustomItemSave
+version: 1.0
+api-version: "1.21"
+commands:
+  customitem:
+    description: Gerencie seus itens personalizados
+    usage: /customitem <save|get|give|remove> [nome] [jogador]
