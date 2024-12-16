@@ -107,16 +107,10 @@ public class Main extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Este comando só pode ser executado por jogadores.");
-            return true;
-        }
-
-        Player player = (Player) sender;
-
+        Player player;
         if (command.getName().equalsIgnoreCase("customitem")) {
             if (args.length < 1) {
-                player.sendMessage("§cUso: /customitem <save|get|give|remove> [nome] [jogador]");
+                sender.sendMessage("§cUso: /customitem <save|get|give|remove> [nome] [jogador]");
                 return true;
             }
 
@@ -124,6 +118,12 @@ public class Main extends JavaPlugin {
 
             switch (subCommand) {
                 case "save":
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage("Este comando só pode ser executado por jogadores.");
+                        return true;
+                    }
+
+                    player = (Player) sender;
                     if (args.length < 2) {
                         player.sendMessage("§cUso: /customitem save <nome>");
                         return true;
@@ -141,6 +141,12 @@ public class Main extends JavaPlugin {
                     break;
 
                 case "get":
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage("Este comando só pode ser executado por jogadores.");
+                        return true;
+                    }
+
+                    player = (Player) sender;
                     if (args.length < 2) {
                         player.sendMessage("§cUso: /customitem get <nome>");
                         return true;
@@ -156,37 +162,37 @@ public class Main extends JavaPlugin {
 
                 case "give":
                     if (args.length < 3) {
-                        player.sendMessage("§cUso: /customitem give <jogador> <nome>");
+                        sender.sendMessage("§cUso: /customitem give <jogador> <nome>");
                         return true;
                     }
                     Player targetPlayer = Bukkit.getPlayer(args[1]);
                     if (targetPlayer == null) {
-                        player.sendMessage("§cJogador não encontrado.");
+                        sender.sendMessage("§cJogador não encontrado.");
                         return true;
                     }
                     ItemStack itemToGive = getItem(args[2]);
                     if (itemToGive != null) {
                         targetPlayer.getInventory().addItem(itemToGive);
-                        player.sendMessage("§aItem dado ao jogador " + targetPlayer.getName() + ".");
+                        sender.sendMessage("§aItem dado ao jogador " + targetPlayer.getName() + ".");
                     } else {
-                        player.sendMessage("§cItem não encontrado.");
+                        sender.sendMessage("§cItem não encontrado.");
                     }
                     break;
 
                 case "remove":
                     if (args.length < 2) {
-                        player.sendMessage("§cUso: /customitem remove <nome>");
+                        sender.sendMessage("§cUso: /customitem remove <nome>");
                         return true;
                     }
                     if (removeItem(args[1])) {
-                        player.sendMessage("§aItem '" + args[1] + "' removido com sucesso.");
+                        sender.sendMessage("§aItem '" + args[1] + "' removido com sucesso.");
                     } else {
-                        player.sendMessage("§cErro ao remover o item ou item não encontrado.");
+                        sender.sendMessage("§cErro ao remover o item ou item não encontrado.");
                     }
                     break;
 
                 default:
-                    player.sendMessage("§cComando inválido. Uso: /customitem <save|get|give|remove> [nome] [jogador]");
+                    sender.sendMessage("§cComando inválido. Uso: /customitem <save|get|give|remove> [nome] [jogador]");
                     break;
             }
         }
