@@ -13,6 +13,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends JavaPlugin {
 
@@ -91,6 +93,21 @@ public class Main extends JavaPlugin {
             getLogger().severe("Erro ao recuperar item: " + e.getMessage());
         }
         return null;
+    }
+
+    private List<String> getAllItems() {
+        List<String> itemNames = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT name FROM items ORDER BY name")) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    itemNames.add(resultSet.getString("name"));
+                }
+            }
+        } catch (SQLException e) {
+            getLogger().severe("Erro ao recuperar itens do banco de dados: " + e.getMessage());
+        }
+        return itemNames;
     }
 
     private boolean removeItem(String name) {
@@ -188,6 +205,18 @@ public class Main extends JavaPlugin {
                         sender.sendMessage("§aItem '" + args[1] + "' removido com sucesso.");
                     } else {
                         sender.sendMessage("§cErro ao remover o item ou item não encontrado.");
+                    }
+                    break;
+
+                case "list":
+                    List<String> allItems = getAllItems();
+                    if (allItems.isEmpty()) {
+                        sender.sendMessage("§7Nenhum item foi salvo ainda.");
+                    } else {
+                        sender.sendMessage("§aItens salvos:");
+                        for (String itemName : allItems) {
+                            sender.sendMessage("§e- §7" + itemName);
+                        }
                     }
                     break;
 
